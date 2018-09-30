@@ -1,0 +1,39 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-3">
+            <h1 class="text-center">Temperature: <span id="envTemp">0</span>°F</h1>
+            <p class="text-center">Humidity: <span id="envHum">0</span>%</p>
+            <div class="funkyradio">
+                <div class="funkyradio-primary">
+                    <input type="radio" name="radio" id="radio1"/>
+                    <label for="radio1">Cool</label>
+                </div>
+                <div class="funkyradio-primary">
+                    <input type="radio" name="radio" id="radio2"/>
+                    <label for="radio2">Heat</label>
+                </div>
+                <div class="funkyradio-primary">
+                    <input type="radio" name="radio" id="radio3"/>
+                    <label for="radio3">Off</label>
+                </div>
+            </div>
+            <h3>Desired Temperature: <span id="desired-temp"></span></h3>
+            <div class="slidecontainer">
+                <label for="myRange"></label><input type="range" min="1" max="100" value="70" class="slider"
+                                                    id="myRange">
+            </div>
+        </div>
+        <div class="col-sm-9">
+            <div class="chart-container" style="position: fixed; width:60vw; margin: auto;">
+                <canvas id="myChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+<link href="/stylesheets/bootstrap/bootstrap.min.css" rel="stylesheet">
+<link href='/stylesheets/style.css' rel="stylesheet"/>
+<script src="/javascripts/jquery/jquery.min.js"></script>
+<script src="/javascripts/bootstrap/bootstrap.min.js"></script>
+<script src="/javascripts/chart.js/Chart.min.js"></script>
+<script src="/javascripts/socket.io/socket.io.js"></script>
+<script src="/javascripts/main.js"></script>
