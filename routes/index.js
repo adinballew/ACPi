@@ -2,7 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const io = require('../io');
-const relayToAC = require('../model/relay-to-ac');
+const ac = require('../model/ac');
 
 /* GET index */
 router.get('/', function (req, res, next) {
@@ -12,7 +12,7 @@ router.get('/', function (req, res, next) {
 /* Event Listener for name */
 function relayEventListener(name, socket) {
     socket.on(name, function (data) {
-        relayToAC(name, data);
+        ac(name, data);
     });
 }
 

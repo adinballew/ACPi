@@ -16,7 +16,7 @@ const chart = new Chart(ctx, {
             backgroundColor: '#14db74',
             pointRadius: 5,
             pointHoverRadius: 7,
-            lineTension: 0
+            // lineTension: 0
         }, {
             label: "Humidity",
             borderColor: "#4152ff",
@@ -26,7 +26,7 @@ const chart = new Chart(ctx, {
             backgroundColor: '#8330ff',
             pointRadius: 5,
             pointHoverRadius: 7,
-            lineTension: 0
+            // lineTension: 0
         }]
     },
     // Configuration options go here
@@ -51,7 +51,7 @@ const chart = new Chart(ctx, {
                 ticks: {
                     beginAtZero: true,
                     max: 90,
-                    min: 50
+                    min: 40
                 }
             }]
         }
