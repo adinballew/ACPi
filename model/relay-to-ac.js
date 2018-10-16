@@ -22,6 +22,7 @@ module.exports = {
         for (let pin in pins) {
             rpio.write(pins[pin], rpio.HIGH);
         }
+        console.log('Starting: ' + name);
         rpio.write(pins['fan'], rpio.LOW);
         rpio.write(pins[name], rpio.LOW);
     }

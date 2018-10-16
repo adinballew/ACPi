@@ -79,6 +79,14 @@ socket.on('temp', function (data) {
     chart.update(); //Update Graph
 });
 
+socket.on('ac_state', function (data) {
+    document.getElementById('acSetting').innerHTML = data.setting;
+    document.getElementById('acDesiredTemp').innerHTML = data.desiredTemp;
+    document.getElementById('acRunning').innerHTML = data.running;
+    document.getElementById('acCountdown').innerHTML = data.countdown;
+    document.getElementById('acOkToSwitch').innerHTML = data.okToSwitch;
+});
+
 window.addEventListener('load', function () { //when page loads
     const cool = document.getElementById('radio1');
     const heat = document.getElementById('radio2');
@@ -94,7 +102,7 @@ window.addEventListener('load', function () { //when page loads
         socket.emit('heat', slider.value); //send button status to server (as 1 or 0)
     });
     off.addEventListener('change', function () { //add event listener for when checkbox changes
-        socket.emit('off'); //send button status to server (as 1 or 0)
+        socket.emit('off', 'Off'); //send button status to server (as 1 or 0)
     });
 
     slider.oninput = function () {

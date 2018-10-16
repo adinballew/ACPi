@@ -36,7 +36,7 @@ setInterval(() => {
         date: today.getFullYear() + "-" + (today.getUTCMonth() + 1) + "-" + today.getDate(),
         time: (today.getHours()) + ":" + (today.getMinutes())
     });
-}, 2000);
+}, 1000);
 
 
 module.exports.getTemperature = () => readings.temperature;

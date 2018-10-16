@@ -1,24 +1,82 @@
 const relayToAC = require('./relay-to-ac');
 const getSensorReadings = require('../model/get-sensor-readings');
+const io = require('../io');
 
 /* Properties of AC Unit */
 const ac_unit = {
-    setting: 'off',
-    desiredTemp: 70,
-    running: false
+    setting: 'off',             // Cool, Heat, Off
+    desiredTemp: 70,            // Desired Temperature to be met
+    running: false,             // Is the AC currently running?
+    countdown: 'EXPIRED',       // Last time the AC Unit stopped
+    okToSwitch: true            // False when delay is active
 };
+
+/* Desired Temp Below Current Temp */
+function desiredBelow() {
+    return ac_unit.desiredTemp <= getSensorReadings.getTemperature();
+}
+
+/* Desired Temp Above Current Temp */
+function desiredAbove() {
+    return ac_unit.desiredTemp >= getSensorReadings.getTemperature();
+}
+
+/* Countdown until OkToSwitch */
+function startCountdown() {
+    let countDownDate = new Date();
+    countDownDate.setMinutes(countDownDate.getMinutes() + 5);
+
+    // Update the count down every 1 second
+    const x = setInterval(function () {
+
+        // Get todays date and time
+        const now = new Date().getTime();
+
+        // Find the distance between now and the count down date
+        const distance = countDownDate - now;
+
+        // Time calculations for minutes and seconds
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        // Output the result in an element with id="demo"
+        ac_unit.countdown = minutes + "m " + seconds + "s ";
+
+        // If the count down is over, write some text
+        if (distance < 0) {
+            clearInterval(x);
+            ac_unit.okToSwitch = true;
+            ac_unit.countdown = "EXPIRED";
+        }
+    }, 1000);
+}
+
+/* Start AC Event */
+function startAC() {
+    relayToAC.run(ac_unit.setting);
+    ac_unit.running = true;
+}
+
+/* Stop AC Event */
+function stopAC() {
+    relayToAC.destroy();
+    ac_unit.running = false;
+    ac_unit.okToSwitch = false;
+    startCountdown();
+}
 
 function cooling() {
     if (!ac_unit.running) {
-        if (ac_unit.desiredTemp < getSensorReadings.getTemperature()) {
-            ac_unit.running = true;
-            relayToAC.run(ac_unit.setting);
+        if (desiredBelow() && ac_unit.countdown === 'EXPIRED') {
+            startAC();
             console.log('Cooling');
         }
     }
-    if (ac_unit.desiredTemp > getSensorReadings.getTemperature()) {
-        relayToAC.destroy();
-        ac_unit.running = false;
+    if (!desiredBelow()) {
+        if (ac_unit.running) {
+            stopAC();
+        }
+        // Temp In Range
     }
     console.log(ac_unit.desiredTemp);
     console.log(getSensorReadings.getTemperature());
@@ -26,30 +84,31 @@ function cooling() {
 
 function heating() {
     if (!ac_unit.running) {
-        if (ac_unit.desiredTemp > getSensorReadings.getTemperature()) {
-            ac_unit.running = true;
-            relayToAC.run(ac_unit.setting);
+        if (desiredAbove() && ac_unit.countdown === 'EXPIRED') {
+            startAC();
             console.log('Heating');
         }
     }
-    if (ac_unit.desiredTemp < getSensorReadings.getTemperature()) {
-        relayToAC.destroy();
-        ac_unit.running = false;
+    if (!desiredAbove()) {
+        if (ac_unit.running) {
+            stopAC();
+        }
+        // Temp In Range
     }
-    console.log(ac_unit.desiredTemp);
-    console.log(getSensorReadings.getTemperature());
+    console.log("Desired Temperature: " + ac_unit.desiredTemp);
+    console.log("Current Temperature: " + getSensorReadings.getTemperature());
 }
 
+/* Listens for signals to update the relay */
 setInterval(() => {
-    /* Cooling */
     if (ac_unit.setting === 'cool') {
         cooling();
     }
-    /* Heating */
     if (ac_unit.setting === 'heat') {
         heating();
     }
-}, 2000);
+    io.sockets.emit('ac_state', ac_unit);   // Emits Current State to UI
+}, 1000);
 
 /*
 Fan = R-G
@@ -62,12 +121,15 @@ module.exports = function (name, data) {
     switch (name) {
         case 'heat':
             ac_unit.setting = name;
+            ac_unit.okToSwitch = true;
             break;
         case 'cool':
             ac_unit.setting = name;
+            ac_unit.okToSwitch = true;
             break;
         case 'off':
             ac_unit.setting = name;
+            ac_unit.running = false;
             relayToAC.destroy();
             break;
     }
