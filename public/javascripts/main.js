@@ -64,17 +64,17 @@ socket.on('temp', function (data) {
     document.getElementById('envHum').innerHTML = data.humidity;
     chart.options.title.text = 'Date: ' + data.date;
 
-    if (chart.data.labels.length !== 30) { //If we have less than 15 data points in the graph
-        chart.data.labels.push(data.time);  //Add time in x-asix
+    if (chart.data.labels.length !== 30) {                  //If we have less than 15 data points in the graph
+        chart.data.labels.push(data.time);                  //Add time in x-asix
         chart.data.datasets[0].data.push(data.temperature);
         chart.data.datasets[1].data.push(data.humidity);
-    } else { //If there are already 30 data points in the graph.
-        chart.data.labels.shift(); //Remove first time data
-        chart.data.labels.push(data.time); //Insert latest time data
-        chart.data.datasets[0].data.shift(); //Remove first temp data
+    } else {                                                //If there are already 30 data points in the graph.
+        chart.data.labels.shift();                          //Remove first time data
+        chart.data.labels.push(data.time);                  //Insert latest time data
+        chart.data.datasets[0].data.shift();                //Remove first temp data
         chart.data.datasets[0].data.push(data.temperature); //Insert latest temp data
-        chart.data.datasets[1].data.shift(); //Remove first hum data
-        chart.data.datasets[1].data.push(data.humidity); //Insert latest hum data
+        chart.data.datasets[1].data.shift();                //Remove first hum data
+        chart.data.datasets[1].data.push(data.humidity);    //Insert latest hum data
     }
     chart.update(); //Update Graph
 });
@@ -85,6 +85,17 @@ socket.on('ac_state', function (data) {
     document.getElementById('acRunning').innerHTML = data.running;
     document.getElementById('acCountdown').innerHTML = data.countdown;
     document.getElementById('acOkToSwitch').innerHTML = data.okToSwitch;
+    switch (data.setting) {
+        case 'cool':
+            document.getElementById('radio1').checked = true;
+            break;
+        case 'heat':
+            document.getElementById('radio2').checked = true;
+            break;
+        default:
+            document.getElementById('radio3').checked = true;
+            break;
+    }
 });
 
 window.addEventListener('load', function () { //when page loads
@@ -93,6 +104,7 @@ window.addEventListener('load', function () { //when page loads
     const off = document.getElementById('radio3');
     const slider = document.getElementById('myRange');
     const output = document.getElementById('desired-temp');
+
     output.innerHTML = slider.value; // Display the default slider value
 
     cool.addEventListener('change', function () { //add event listener for when checkbox changes
