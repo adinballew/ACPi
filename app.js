@@ -4,13 +4,20 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 
+const hbs = require('express-hbs');  // https://github.com/barc/express-hbs
+
 const indexRouter = require('./routes/index');
 
 const app = express();
 
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
+
+app.engine('hbs', hbs.express4({
+  defaultLayout: __dirname + '/views/layouts/default.hbs',
+  partialsDir: __dirname + '/views/partials',
+  layoutsDir: __dirname + '/views/layouts'
+}));
 
 app.use(logger('dev'));
 app.use(express.json());

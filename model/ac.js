@@ -8,7 +8,6 @@ const ac_unit = {
     desiredTemp: 70,            // Desired Temperature to be met
     running: false,             // Is the AC currently running?
     countdown: 'EXPIRED',       // Last time the AC Unit stopped
-    okToSwitch: true            // False when delay is active
 };
 
 /* Desired Temp Below Current Temp */
@@ -29,7 +28,7 @@ function startCountdown() {
     // Update the count down every 1 second
     const x = setInterval(function () {
 
-        // Get todays date and time
+        // Get today's date and time
         const now = new Date().getTime();
 
         // Find the distance between now and the count down date
@@ -45,7 +44,6 @@ function startCountdown() {
         // If the count down is over, write some text
         if (distance < 0) {
             clearInterval(x);
-            ac_unit.okToSwitch = true;
             ac_unit.countdown = "EXPIRED";
         }
     }, 1000);
@@ -61,7 +59,6 @@ function startAC() {
 function stopAC() {
     relayToAC.destroy();
     ac_unit.running = false;
-    ac_unit.okToSwitch = false;
     startCountdown();
 }
 
@@ -121,15 +118,12 @@ module.exports = function (name, data) {
     switch (name) {
         case 'heat':
             ac_unit.setting = name;
-            ac_unit.okToSwitch = true;
             break;
         case 'cool':
             ac_unit.setting = name;
-            ac_unit.okToSwitch = true;
             break;
         case 'off':
             ac_unit.setting = name;
-            ac_unit.running = false;
             relayToAC.destroy();
             break;
     }

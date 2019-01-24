@@ -59,6 +59,7 @@ const chart = new Chart(ctx, {
 
 });
 
+/* Listening for "temp" signal */
 socket.on('temp', function (data) {
     document.getElementById('envTemp').innerHTML = data.temperature;
     document.getElementById('envHum').innerHTML = data.humidity;
@@ -69,22 +70,23 @@ socket.on('temp', function (data) {
         chart.data.datasets[0].data.push(data.temperature);
         chart.data.datasets[1].data.push(data.humidity);
     } else {                                                //If there are already 30 data points in the graph.
-        chart.data.labels.shift();                          //Remove first time data
+        chart.data.labels.shift();                          //Remove oldest time data
         chart.data.labels.push(data.time);                  //Insert latest time data
-        chart.data.datasets[0].data.shift();                //Remove first temp data
+        chart.data.datasets[0].data.shift();                //Remove oldest temp data
         chart.data.datasets[0].data.push(data.temperature); //Insert latest temp data
-        chart.data.datasets[1].data.shift();                //Remove first hum data
+        chart.data.datasets[1].data.shift();                //Remove oldest hum data
         chart.data.datasets[1].data.push(data.humidity);    //Insert latest hum data
     }
     chart.update(); //Update Graph
 });
 
+/* Listening for "ac_state" signal */
 socket.on('ac_state', function (data) {
+    //Receives the emitted state signal from the controller
     document.getElementById('acSetting').innerHTML = data.setting;
     document.getElementById('acDesiredTemp').innerHTML = data.desiredTemp;
     document.getElementById('acRunning').innerHTML = data.running;
     document.getElementById('acCountdown').innerHTML = data.countdown;
-    document.getElementById('acOkToSwitch').innerHTML = data.okToSwitch;
     switch (data.setting) {
         case 'cool':
             document.getElementById('radio1').checked = true;
@@ -98,7 +100,8 @@ socket.on('ac_state', function (data) {
     }
 });
 
-window.addEventListener('load', function () { //when page loads
+/* When page loads */
+window.addEventListener('load', function () {
     const cool = document.getElementById('radio1');
     const heat = document.getElementById('radio2');
     const off = document.getElementById('radio3');

@@ -9,6 +9,10 @@ router.get('/', function (req, res, next) {
     res.render('index', {});
 });
 
+router.get('/logs', function (req, res, next) {
+    res.render('logs', {Title: 'Logs'});
+});
+
 /* Event Listener for name */
 function relayEventListener(name, socket) {
     socket.on(name, function (data) {

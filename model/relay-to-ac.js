@@ -12,6 +12,7 @@ for (let pin in pins) {
     rpio.open(pins[pin], rpio.OUTPUT, rpio.HIGH);
 }
 
+/* Functions for communicating with the serial pins */
 module.exports = {
     destroy: function () {
         for (let pin in pins) {

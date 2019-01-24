@@ -18,18 +18,18 @@ const getSensorReadings = (callback) => {
     })
 };
 
+/* Polls sensor data every second */
 setInterval(() => {
     getSensorReadings((err, temperature, humidity) => {
         if (err) {
             return console.error(err)
         }
-        /*
-        Set the values of the cache on receiving new readings
-        */
+        /* Set the values of the cache on receiving new readings */
         readings.temperature = (temperature * 1.8 + 32).toFixed(1); // Convert to Fahrenheit
         readings.humidity = humidity
     });
     let today = new Date();
+    // Emits sensor data to controller
     io.sockets.emit('temp', {
         temperature: readings.temperature,
         humidity: readings.humidity,
