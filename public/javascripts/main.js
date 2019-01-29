@@ -51,7 +51,7 @@ const chart = new Chart(ctx, {
                 ticks: {
                     beginAtZero: true,
                     max: 90,
-                    min: 40
+                    min: 10
                 }
             }]
         }
