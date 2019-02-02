@@ -1,15 +1,15 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const io = require('../io');
-const ac = require('../model/ac');
+const io = require("../io");
+const ac = require("../model/ac");
 
 /* GET index */
-router.get('/', function (req, res, next) {
-    res.render('index', {});
+router.get("/", function (req, res, next) {
+    res.render("index", {});
 });
 
-router.get('/logs', function (req, res, next) {
-    res.render('logs', {Title: 'Logs'});
+router.get("/logs", function (req, res, next) {
+    res.render("logs", {Title: "Logs"});
 });
 
 /* Event Listener for name */
@@ -20,11 +20,11 @@ function relayEventListener(name, socket) {
 }
 
 /* Open socket on Connection */
-io.on('connection', function (socket) {
-    relayEventListener('cool', socket);
-    relayEventListener('heat', socket);
-    relayEventListener('off', socket);
-    console.log('client connected.'); //show a log as a new client connects.
+io.on("connection", function (socket) {
+    relayEventListener("cool", socket);
+    relayEventListener("heat", socket);
+    relayEventListener("off", socket);
+    console.log("client connected."); //show a log as a new client connects.
 });
 
 module.exports = router;

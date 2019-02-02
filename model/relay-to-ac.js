@@ -1,4 +1,4 @@
-const rpio = require('rpio');
+const rpio = require("rpio"); // https://github.com/jperkin/node-rpio
 
 /* Assign Pins to Relays */
 const pins = {
@@ -23,8 +23,8 @@ module.exports = {
         for (let pin in pins) {
             rpio.write(pins[pin], rpio.HIGH);
         }
-        console.log('Starting: ' + name);
-        rpio.write(pins['fan'], rpio.LOW);
+        console.log("Starting: " + name);
+        rpio.write(pins["fan"], rpio.LOW);
         rpio.write(pins[name], rpio.LOW);
     }
 };

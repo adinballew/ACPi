@@ -1,13 +1,13 @@
-const relayToAC = require('./relay-to-ac');
-const getSensorReadings = require('../model/get-sensor-readings');
-const io = require('../io');
+const relayToAC = require("./relay-to-ac");
+const getSensorReadings = require("./get-sensor-readings");
+const io = require("../io");
 
 /* Properties of AC Unit */
 const ac_unit = {
-    setting: 'off',             // Cool, Heat, Off
+    setting: "off",             // Cool, Heat, Off
     desiredTemp: 70,            // Desired Temperature to be met
     running: false,             // Is the AC currently running?
-    countdown: 'EXPIRED',       // Last time the AC Unit stopped
+    countdown: "EXPIRED",       // Last time the AC Unit stopped
 };
 
 /* Desired Temp Below Current Temp */
@@ -64,9 +64,9 @@ function stopAC() {
 
 function cooling() {
     if (!ac_unit.running) {
-        if (desiredBelow() && ac_unit.countdown === 'EXPIRED') {
+        if (desiredBelow() && ac_unit.countdown === "EXPIRED") {
             startAC();
-            console.log('Cooling');
+            console.log("Cooling");
         }
     }
     if (!desiredBelow()) {
@@ -81,9 +81,9 @@ function cooling() {
 
 function heating() {
     if (!ac_unit.running) {
-        if (desiredAbove() && ac_unit.countdown === 'EXPIRED') {
+        if (desiredAbove() && ac_unit.countdown === "EXPIRED") {
             startAC();
-            console.log('Heating');
+            console.log("Heating");
         }
     }
     if (!desiredAbove()) {
@@ -98,13 +98,13 @@ function heating() {
 
 /* Listens for signals to update the relay */
 setInterval(() => {
-    if (ac_unit.setting === 'cool') {
+    if (ac_unit.setting === "cool") {
         cooling();
     }
-    if (ac_unit.setting === 'heat') {
+    if (ac_unit.setting === "heat") {
         heating();
     }
-    io.sockets.emit('ac_state', ac_unit);   // Emits Current State to UI
+    io.sockets.emit("ac_state", ac_unit);   // Emits Current State to UI
 }, 1000);
 
 /*
@@ -113,16 +113,16 @@ Cool = R-G, R-Y
 Heat = R-G, R-W
  */
 module.exports = function (name, data) {
-    console.log(name + ': on');
+    console.log(name + ": on");
     ac_unit.desiredTemp = data;
     switch (name) {
-        case 'heat':
+        case "heat":
             ac_unit.setting = name;
             break;
-        case 'cool':
+        case "cool":
             ac_unit.setting = name;
             break;
-        case 'off':
+        case "off":
             ac_unit.setting = name;
             relayToAC.destroy();
             break;

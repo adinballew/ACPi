@@ -2,3 +2,4 @@
 node_modules/
 /sensordata.db
 /package-lock.json
+/adhoc.js
