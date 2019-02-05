@@ -2,15 +2,7 @@ const express = require("express");
 const router = express.Router();
 const io = require("../io");
 const ac = require("../model/ac");
-
-/* GET index */
-router.get("/", function (req, res, next) {
-    res.render("index", {});
-});
-
-router.get("/logs", function (req, res, next) {
-    res.render("logs", {Title: "Logs"});
-});
+const SensorData = require("../model/sensordata");
 
 /* Event Listener for name */
 function relayEventListener(name, socket) {
@@ -19,12 +11,33 @@ function relayEventListener(name, socket) {
     });
 }
 
+let sensordata;
+
+function getSensorData() {
+    SensorData.findAll({limit: 20})
+        .then(result => {
+            sensordata = result;
+        })
+        .catch(err => console.log(err));
+}
+
+sensordata = getSensorData();
+
+/* GET index */
+router.get("/", function (req, res, next) {
+    res.render("index", {});
+});
+
+router.get("/logs", function (req, res, next) {
+    res.render("logs", {sensordata});
+});
+
 /* Open socket on Connection */
 io.on("connection", function (socket) {
     relayEventListener("cool", socket);
     relayEventListener("heat", socket);
     relayEventListener("off", socket);
-    console.log("client connected."); //show a log as a new client connects.
+    console.log("Client Connected"); //show a log as a new client connects.
 });
 
 module.exports = router;

@@ -1,5 +1,5 @@
 const io = require("../io");
-const db = require("../db");
+const sensordata = require("./sensordata");
 
 // TODO: Consider writing firmware of sensor tag to support always on
 //  http://www.ti.com/tool/BLE-Stack
@@ -14,6 +14,10 @@ const readings = {
     pressure: 0,
     lux: 0
 };
+
+function appendLeadingZero(date) {
+    return ("0" + (date)).slice(-2)
+}
 
 function handleTag(tag) {
     "use strict";
@@ -63,13 +67,14 @@ function handleTag(tag) {
 // discovers tag by id
 SensorTag.discoverById(cc2650, handleTag);
 
-/* Prepared Statement Insert */
-function insertSensorData(today) {
-    "use strict";
-    let connection = db.connect("sensordata.db");
-    connection.run("INSERT INTO sensordata (Date, Temperature, Humidity, Pressure, Lux) VALUES (?, ?, ?, ?, ?)",
-        ([today.toISOString(), readings.temperature, readings.humidity, readings.pressure, readings.lux]));
-    connection.close();
+function createSensorData(today) {
+    sensordata.create({
+        Date: today,
+        Temperature: readings.temperature,
+        Humidity: readings.humidity,
+        Pressure: readings.pressure,
+        Lux: readings.lux
+    });
 }
 
 /* Polls sensor data every second */
@@ -81,12 +86,13 @@ setInterval(() => {
         humidity: readings.humidity,
         pressure: readings.pressure,
         lux: readings.lux,
-        date: today.getFullYear() + "-" + ("0" + (today.getUTCMonth() + 1)).slice(-2) + "-" + ("0" + today.getDate()).slice(-2),
+        date: today.getFullYear() + "-"
+            + appendLeadingZero(today.getUTCMonth() + 1) + "-"
+            + appendLeadingZero(today.getDate()),
         time: (today.getHours()) + ":" + (today.getMinutes())
     });
-    insertSensorData(today)
+    createSensorData(today)
 }, 1000);
-
 
 module.exports.getTemperature = () => readings.temperature;
 module.exports.getHumidity = () => readings.humidity;

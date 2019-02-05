@@ -1,11 +1,25 @@
 {{!< default}}
 <div class="container-fluid">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="banner">
-                <h2>{{title}}</h2>
-            </div>
-            Test
-        </div>
-    </div>
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th scope="col">Date</th>
+            <th scope="col">Temperature</th>
+            <th scope="col">Humidity</th>
+            <th scope="col">Pressure</th>
+            <th scope="col">Lux</th>
+        </tr>
+        </thead>
+        <tbody>
+        {{# each sensordata}}
+            <tr>
+                <th scope="row">{{this.Date}}</th>
+                <td>{{this.Temperature}}</td>
+                <td>{{this.Humidity}}</td>
+                <td>{{this.Pressure}}</td>
+                <td>{{this.Lux}}</td>
+            </tr>
+        {{/each}}
+        </tbody>
+    </table>
 </div>

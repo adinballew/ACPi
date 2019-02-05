@@ -1,12 +1,15 @@
-const sqlite3 = require("sqlite3").verbose(); // https://github.com/mapbox/node-sqlite3
-
-module.exports = {
-    connect: function (database) {
-        return new sqlite3.Database(database, (err) => {
-            if (err) {
-                return console.error(err.message);
-            }
-            // console.log("Connected to database.");
-        });
+const Sequelize = require("sequelize");
+const sequelize = new Sequelize("sensordata", null, null, {
+    dialect: "sqlite",
+    storage: "sensordata.db",
+    operatorsAliases: false,
+    logging: false,
+    pool: {
+        max: 5,
+        min: 0,
+        acquire: 30000,
+        idle: 10000
     }
-};
+});
+
+module.exports = sequelize;
