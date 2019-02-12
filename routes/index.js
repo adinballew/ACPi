@@ -28,8 +28,8 @@ router.get("/", function (req, res, next) {
     res.render("index", {});
 });
 
-router.get("/logs", function (req, res, next) {
-    res.render("logs", {sensordata});
+router.get("/recent-data", function (req, res, next) {
+    res.render("recent-data", {sensordata});
 });
 
 /* Open socket on Connection */

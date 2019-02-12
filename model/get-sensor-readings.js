@@ -7,6 +7,7 @@ const sensordata = require("./sensordata");
 const SensorTag = require("sensortag"); // https://github.com/sandeepmistry/node-sensortag
 const tags = [];
 const cc2650 = "546c0e533366";
+const pollTime = 6; // Time in seconds to poll
 
 const readings = {
     temperature: 0,
@@ -17,6 +18,10 @@ const readings = {
 
 function appendLeadingZero(date) {
     return ("0" + (date)).slice(-2)
+}
+
+function to12HourClock(hour) {
+    if(hour >= 13) return hour - 12;
 }
 
 function handleTag(tag) {
@@ -35,9 +40,9 @@ function handleTag(tag) {
         tag.enableBarometricPressure();
         tag.enableLuxometer();
 
-        tag.setHumidityPeriod(1000); // set its period
-        tag.setBarometricPressurePeriod(1000);
-        tag.setLuxometerPeriod(1000);
+        tag.setHumidityPeriod(1000 * pollTime); // set its period
+        tag.setBarometricPressurePeriod(1000 * pollTime);
+        tag.setLuxometerPeriod(1000 * pollTime);
 
         tag.notifyHumidity(); //turn on notifications
         tag.notifyBarometricPressure();
@@ -89,10 +94,12 @@ setInterval(() => {
         date: today.getFullYear() + "-"
             + appendLeadingZero(today.getUTCMonth() + 1) + "-"
             + appendLeadingZero(today.getDate()),
-        time: (today.getHours()) + ":" + (today.getMinutes())
+        time: (appendLeadingZero(to12HourClock(today.getHours()))) + ":"
+            + (appendLeadingZero(today.getMinutes())) + ":"
+            + appendLeadingZero(today.getSeconds())
     });
-    createSensorData(today)
-}, 1000);
+    // createSensorData(today)
+}, 1000 * pollTime);
 
 module.exports.getTemperature = () => readings.temperature;
 module.exports.getHumidity = () => readings.humidity;

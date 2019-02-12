@@ -178,7 +178,7 @@ const chart4 = new Chart(ctx4, {
                 },
                 ticks: {
                     beginAtZero: true,
-                    max: 2000,
+                    max: 500,
                     min: 0
                 }
             }]

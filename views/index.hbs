@@ -1,6 +1,6 @@
 {{!< default}}
 <div class="row">
-    <div class="col-sm-3">
+    <div class="col">
         {{! Temp and Humidity }}
         <h1 class="text-center">Temperature: <span id="envTemp">0</span>°F</h1>
         <p class="text-center">Humidity: <span id="envHum">0</span>%</p>
@@ -38,39 +38,39 @@
     </div>
 
 
-    <div class="col-sm-9">
-        <div class="container">
+    <div class="col-md-9">
+        <div class="container-fluid">
+            {{! Chart 1 }}
             <h1 id="date" style="text-align: start">Date: </h1>
             <div class="row">
-                {{! Chart 1 }}
-                <div class="col-xs-3">
-                    <div class="chart-container" style="position: relative; width: 25vw; margin: auto;">
+                <div class="col-sm-auto">
+                    <div class="chart-container" style="position: relative; width: 32vw; margin: auto;">
                         <canvas id="chart1"></canvas>
                     </div>
                 </div>
                 {{! Chart 2 }}
-                <div class="col-xs-3">
-                    <div class="chart-container" style="position: relative; width: 25vw; margin: auto;">
+                <div class="col-sm-auto">
+                    <div class="chart-container" style="position: relative; width: 32vw; margin: auto;">
                         <canvas id="chart2"></canvas>
                     </div>
                 </div>
                 {{! Chart 3 }}
-                <div class="col-xs-3">
-                    <div class="chart-container" style="position: relative; width: 25vw; margin: auto;">
+                <div class="col-sm-auto">
+                    <div class="chart-container" style="position: relative; width: 32vw; margin: auto;">
                         <canvas id="chart3"></canvas>
                     </div>
                 </div>
                 {{! Chart 4 }}
-                <div class="col-xs-3">
-                    <div class="chart-container" style="position: relative; width: 25vw; margin: auto;">
+                <div class="col-sm-auto">
+                    <div class="chart-container" style="position: relative; width: 32vw; margin: auto;">
                         <canvas id="chart4"></canvas>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
 </div>
+
 <script src="/javascripts/chart.js/Chart.min.js"></script>
 <script src="/javascripts/socket.io/socket.io.js"></script>
 <script src="/javascripts/charts.js"></script>
