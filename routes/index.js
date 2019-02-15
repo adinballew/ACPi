@@ -2,26 +2,7 @@ const express = require("express");
 const router = express.Router();
 const io = require("../io");
 const ac = require("../model/ac");
-const SensorData = require("../model/sensordata");
-
-/* Event Listener for name */
-function relayEventListener(name, socket) {
-    socket.on(name, function (data) {
-        ac(name, data);
-    });
-}
-
-let sensordata;
-
-function getSensorData() {
-    SensorData.findAll({limit: 20})
-        .then(result => {
-            sensordata = result;
-        })
-        .catch(err => console.log(err));
-}
-
-sensordata = getSensorData();
+const queryControl = require("../controller/query-controller"); //TODO: Pass just the function callback.
 
 /* GET index */
 router.get("/", function (req, res, next) {
@@ -29,8 +10,15 @@ router.get("/", function (req, res, next) {
 });
 
 router.get("/recent-data", function (req, res, next) {
-    res.render("recent-data", {sensordata});
+    res.render("recent-data", {});
 });
+
+/* Event Listener for name */
+function relayEventListener(name, socket) {
+    socket.on(name, function (data) {
+        ac(name, data);
+    });
+}
 
 /* Open socket on Connection */
 io.on("connection", function (socket) {

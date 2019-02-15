@@ -1,5 +1,5 @@
 const relayToAC = require("./relay-to-ac");
-const getSensorReadings = require("./get-sensor-readings");
+const getSensorReadings = require("../controller/get-sensor-readings");
 const io = require("../io");
 
 /* Properties of AC Unit */

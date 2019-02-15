@@ -1,5 +1,5 @@
 const io = require("../io");
-const sensordata = require("./sensordata");
+const sensordata = require("../model/sensordata");
 
 // TODO: Consider writing firmware of sensor tag to support always on
 //  http://www.ti.com/tool/BLE-Stack
@@ -98,7 +98,7 @@ setInterval(() => {
             + (appendLeadingZero(today.getMinutes())) + ":"
             + appendLeadingZero(today.getSeconds())
     });
-    // createSensorData(today)
+    createSensorData(today)
 }, 1000 * pollTime);
 
 module.exports.getTemperature = () => readings.temperature;

@@ -1,18 +1,31 @@
+const socket = io();
+
 const table = new Tabulator("#recent-table", {
-    columns:[
-        {title:"Name", field:"name", sorter:"string", width:200, editor:true},
-        {title:"Age", field:"age", sorter:"number", align:"right", formatter:"progress"},
-        {title:"Gender", field:"gender", sorter:"string", cellClick:function(e, cell){console.log("cell click")},},
-        {title:"Height", field:"height", formatter:"star", align:"center", width:100},
-        {title:"Favourite Color", field:"col", sorter:"string"},
-        {title:"Date Of Birth", field:"dob", sorter:"date", align:"center"},
-        {title:"Cheese Preference", field:"cheese", sorter:"boolean", align:"center", formatter:"tickCross"},
+    pagination: "local",
+    paginationSize: 10,
+    index: "Date",
+    columns: [
+        {
+            title: "Date", field: "Date", sorter: "time", formatter: "datetime", formatterParams: {
+                outputFormat: "YYYY/MM/DD", invalidPlaceholder: "(invalid date)"
+            },
+            sorterParams: {
+                outputFormat: "HH:MM:SS"
+            }, width: 300
+        },
+        {title: "Temperature", field: "Temperature", sorter: "number", align: "left"},
+        {
+            title: "Humidity", field: "Humidity", sorter: "number", formatter: "progress", formatterParams: {
+                min: 0,
+                max: 100
+            }, width: 300
+        },
+        {title: "Pressure", field: "Pressure", sorter: "number", align: "left"},
+        {title: "Lux", field: "Lux", sorter: "number", align: "left"},
     ],
 });
-
-let tableData = [
-    {id:1, name:"Billy Bob", age:"12", gender:"male", height:1, col:"red", dob:"", cheese:1},
-    {id:2, name:"Mary May", age:"1", gender:"female", height:2, col:"blue", dob:"14/05/1982", cheese:true},
-];
-
-table.setData(tableData);
+//TODO: Add a fixed size to the number of record in the table.
+socket.on("dbData", function (data) {
+    //Receives the emitted state signal from the controller
+    table.updateOrAddData(data.recentData)
+});

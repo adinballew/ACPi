@@ -19,6 +19,7 @@
     "express-hbs": "^1.0.4",
     "http-errors": "~1.6.2",
     "jquery": "^3.3.1",
+    "moment": "^2.24.0",
     "morgan": "^1.9.1",
     "popper.js": "^1.14.4",
     "rpio": "^0.9.22",
@@ -31,11 +32,14 @@
   },
   "devDependencies": {
     "@types/express": "^4.16.1",
+    "@types/socket.io": "^2.1.1",
+    "babel-eslint": "^10.0.1",
     "eslint": "^5.12.1"
   },
   "eslintConfig": {
+    "parser": "babel-eslint",
     "parserOptions": {
-      "ecmaVersion": 2017,
+      "ecmaVersion": 6,
       "sourceType": "module"
     },
     "env": {
