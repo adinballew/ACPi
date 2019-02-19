@@ -1,9 +1,9 @@
 const io = require("../io");
 const sensordata = require("../model/sensordata");
 
-// TODO: Consider writing firmware of sensor tag to support always on
-//  http://www.ti.com/tool/BLE-Stack
-//  http://e2e.ti.com/support/wireless-connectivity/bluetooth/f/538/t/423701?Sensor-Tag-2-Prevent-Sleep-Always-On-Firmware
+/** TODO: Consider writing firmware of sensor tag to support always on
+ * http://www.ti.com/tool/BLE-Stack
+ * ttp://e2e.ti.com/support/wireless-connectivity/bluetooth/f/538/t/423701?Sensor-Tag-2-Prevent-Sleep-Always-On-Firmware **/
 const SensorTag = require("sensortag"); // https://github.com/sandeepmistry/node-sensortag
 const tags = [];
 const cc2650 = "546c0e533366";
@@ -82,7 +82,7 @@ function createSensorData(today) {
     });
 }
 
-/* Polls sensor data every second */
+/** Polls sensor data every second **/
 setInterval(() => {
     let today = new Date();
     // Emits sensor data to controller

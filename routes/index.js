@@ -2,7 +2,9 @@ const express = require("express");
 const router = express.Router();
 const io = require("../io");
 const ac = require("../model/ac");
-const queryControl = require("../controller/query-controller"); //TODO: Pass just the function callback.
+const queryControl = require("../controller/query-controller");
+
+queryControl.getRecentData();
 
 /* GET index */
 router.get("/", function (req, res, next) {

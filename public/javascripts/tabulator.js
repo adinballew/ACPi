@@ -1,13 +1,15 @@
 const socket = io();
 
 const table = new Tabulator("#recent-table", {
+    layout: "fitColumns",
     pagination: "local",
     paginationSize: 10,
     index: "Date",
     columns: [
         {
             title: "Date", field: "Date", sorter: "time", formatter: "datetime", formatterParams: {
-                outputFormat: "YYYY/MM/DD", invalidPlaceholder: "(invalid date)"
+                outputFormat: "YYYY/MM/DD",
+                invalidPlaceholder: "(invalid date)"
             },
             sorterParams: {
                 outputFormat: "HH:MM:SS"
