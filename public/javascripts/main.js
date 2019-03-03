@@ -1,10 +1,6 @@
 const socket = io(); //load socket.io-client and connect to the host that serves the page
 const chartMaxLength = 10;
 
-document.getElementById("envTemp").innerHTML = localStorage.getItem("temperature");
-document.getElementById("envHum").innerHTML = localStorage.getItem("humidity");
-document.getElementById("date").innerHTML = "Date: "+ localStorage.getItem("date");
-
 /** Adds Data to Chart **/
 function addData(chart, label, data) {
     chart.data.labels.push(label);
@@ -55,6 +51,11 @@ socket.on("temp", function (data) {
 
 /** Listening for "ac_state" signal **/
 socket.on("ac_state", function (data) {
+    localStorage.setItem("acSetting", data.setting);
+    localStorage.setItem("acDesiredTemp", data.desiredTemp);
+    localStorage.setItem("acRunning", data.running);
+    localStorage.setItem("acCountdown", data.countdown);
+
     //Receives the emitted state signal from the controller
     document.getElementById("acSetting").innerHTML = data.setting;
     document.getElementById("acDesiredTemp").innerHTML = data.desiredTemp;
@@ -75,12 +76,18 @@ socket.on("ac_state", function (data) {
 
 /** When page loads **/
 window.addEventListener("load", function () {
+    document.getElementById("envTemp").innerHTML = localStorage.getItem("temperature");
+    document.getElementById("envHum").innerHTML = localStorage.getItem("humidity");
+    document.getElementById("date").innerHTML = "Date: " + localStorage.getItem("date");
+
     const cool = document.getElementById("radio1");
     const heat = document.getElementById("radio2");
     const off = document.getElementById("radio3");
-    const slider = document.getElementById("myRange");
+    const slider = document.getElementById("acDesiredTempSlider");
     const output = document.getElementById("desired-temp");
+    const toggleAuto = document.getElementById("toggleAuto");
 
+    slider.value = localStorage.getItem("acDesiredTemp"); // Set slider value to cached value
     output.innerHTML = slider.value; // Display the default slider value
 
     cool.addEventListener("change", function () { //add event listener for when checkbox changes
@@ -104,4 +111,12 @@ window.addEventListener("load", function () {
             socket.emit("heat", this.value);
         }
     };
+
+    toggleAuto.onchange = function () {
+        if (toggleAuto.checked) {
+            socket.emit("auto", "on");
+        } else {
+            socket.emit("auto", "off");
+        }
+    }
 });

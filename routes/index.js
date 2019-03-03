@@ -11,6 +11,10 @@ router.get("/", function (req, res, next) {
     res.render("index", {});
 });
 
+router.get("/scheduler", function (req, res, next) {
+    res.render("scheduler", {});
+});
+
 router.get("/recent-data", function (req, res, next) {
     res.render("recent-data", {});
 });
@@ -27,6 +31,7 @@ io.on("connection", function (socket) {
     relayEventListener("cool", socket);
     relayEventListener("heat", socket);
     relayEventListener("off", socket);
+    relayEventListener("auto", socket);
     console.log("Client Connected"); //show a log as a new client connects.
 });
 

@@ -113,18 +113,26 @@ Cool = R-G, R-Y
 Heat = R-G, R-W
  */
 module.exports = function (name, data) {
-    console.log(name + ": on");
-    ac_unit.desiredTemp = data;
     switch (name) {
         case "heat":
+            console.log(name + ": on");
             ac_unit.setting = name;
+            ac_unit.desiredTemp = data;
             break;
         case "cool":
+            console.log(name + ": on");
             ac_unit.setting = name;
+            ac_unit.desiredTemp = data;
             break;
         case "off":
+            console.log(name + ": on");
             ac_unit.setting = name;
+            ac_unit.desiredTemp = data;
+            ac_unit.countdown = "EXPIRED";
             relayToAC.destroy();
+            break;
+        case "auto":
+            console.log(name + ": " + data);
             break;
     }
 };

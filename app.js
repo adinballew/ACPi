@@ -5,8 +5,10 @@ const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 
 const hbs = require("express-hbs");  // https://github.com/barc/express-hbs
+const intl = require("handlebars-intl");  // https://formatjs.io/handlebars/
+const session = require("express-session");  // https://github.com/expressjs/session
 
-const indexRouter = require("./routes/index");
+const index = require("./routes/index");
 
 const app = express();
 
@@ -19,13 +21,28 @@ app.engine("hbs", hbs.express4({
     layoutsDir: __dirname + "/views/layouts"
 }));
 
+intl.registerWith(hbs);
+
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
+app.use(session({
+    secret: "secret",
+    resave: false,
+    saveUninitialized: true
+}));
+
 app.use(express.static(path.join(__dirname, "public")));
 
-app.use("/", indexRouter);
+// res.locals is an object passed to hbs engine
+app.use(function (req, res, next)
+{
+    res.locals.session = req.session;
+    next();
+});
+
+app.use("/", index);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

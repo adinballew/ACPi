@@ -4,6 +4,7 @@ const table = new Tabulator("#recent-table", {
     layout: "fitColumns",
     pagination: "local",
     paginationSize: 10,
+    paginationSizeSelector:[10, 25, 50, 100],
     index: "Date",
     columns: [
         {
