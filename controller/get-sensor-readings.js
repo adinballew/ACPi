@@ -7,7 +7,7 @@ const sensordata = require("../model/sensordata");
 const SensorTag = require("sensortag"); // https://github.com/sandeepmistry/node-sensortag
 const tags = [];
 const cc2650 = "546c0e533366";
-const pollTime = 6; // Time in seconds to poll
+const pollTime = 1; // Time in seconds to poll
 const tempConfig = 6;
 
 const readings = {

@@ -4,7 +4,8 @@ const io = require("../io");
 const ac = require("../model/ac");
 const queryControl = require("../controller/query-controller");
 
-queryControl.getRecentData();
+//TODO: Increase responsiveness
+// queryControl.getRecentData();
 
 /* GET index */
 router.get("/", function (req, res, next) {
@@ -15,9 +16,9 @@ router.get("/scheduler", function (req, res, next) {
     res.render("scheduler", {});
 });
 
-router.get("/recent-data", function (req, res, next) {
-    res.render("recent-data", {});
-});
+// router.get("/recent-data", function (req, res, next) {
+//     res.render("recent-data", {});
+// });
 
 /* Event Listener for name */
 function relayEventListener(name, socket) {

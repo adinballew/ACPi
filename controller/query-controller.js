@@ -8,7 +8,7 @@ function getRecentData() {
                 io.sockets.emit("dbData", {recentData: result});
             })
             .catch(err => console.log(err));
-    }, 6000);
+    }, 1000);
 }
 
 module.exports.getRecentData = () => getRecentData();

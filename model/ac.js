@@ -7,6 +7,7 @@ const ac_unit = {
     setting: "off",             // Cool, Heat, Off
     desiredTemp: 70,            // Desired Temperature to be met
     running: false,             // Is the AC currently running?
+    cycleState: "off",
     countdown: "EXPIRED",       // Last time the AC Unit stopped
 };
 
@@ -20,46 +21,101 @@ function desiredAbove() {
     return ac_unit.desiredTemp >= getSensorReadings.getTemperature();
 }
 
-/* Countdown until OkToSwitch */
-function startCountdown() {
+function fanState() {
+    ac_unit.cycleState = "fan";
+    relayToAC.fan();
+}
+
+function runningState() {
+    ac_unit.cycleState = "running";
+    relayToAC.run(ac_unit.setting);
+}
+
+function restingState() {
+    ac_unit.cycleState = "resting";
+    relayToAC.destroy();
+}
+
+/**
+ * fan only cycle:          7min-6min           relayToAC.fan();
+ * cooling/heating cycle:   6min-2min           relayToAC.run(ac_unit.setting);
+ * fan only cycle:          2min-1min 30sec     relayToAC.fan();
+ * rest cycle:              1min 30sec          relayToAC.destroy();
+ */
+function cycleStateManager(minutes, seconds) {
+    console.log("Minutes: " + minutes + " Seconds: " + seconds);
+    if ((minutes <= 7 && minutes >= 6) && ac_unit.cycleState !== "fan") {
+        fanState();
+    } else if ((minutes < 6 && minutes >= 2) && ac_unit.cycleState !== "running") {
+        runningState();
+    } else if (minutes < 2 && (minutes >= 1 && seconds >= 30) && ac_unit.cycleState !== "fan") {
+        fanState();
+    } else if ((minutes <= 1 && seconds < 30) && ac_unit.cycleState !== "resting") {
+        restingState();
+    }
+}
+
+/* Countdown until AC can run again */
+function startExpirationCountdown() {
     let countDownDate = new Date();
     countDownDate.setMinutes(countDownDate.getMinutes() + 5);
-
     // Update the count down every 1 second
     const x = setInterval(function () {
-
         // Get today's date and time
         const now = new Date().getTime();
-
         // Find the distance between now and the count down date
         const distance = countDownDate - now;
-
         // Time calculations for minutes and seconds
         const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
         const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
         // Output the result in an element with id="demo"
         ac_unit.countdown = minutes + "m " + seconds + "s ";
 
         // If the count down is over, write some text
-        if (distance < 0) {
+        if (distance <= 0) {
             clearInterval(x);
             ac_unit.countdown = "EXPIRED";
         }
     }, 1000);
 }
 
+function startACCycleTimer() {
+    let countDownDate = new Date();
+    countDownDate.setMinutes(countDownDate.getMinutes() + 7);
+
+    // Update the count down every 1 second
+    if (ac_unit.running && ac_unit.cycleState === "off") {
+        const cycleTimer = setInterval(function () {
+            // Get today's date and time
+            const now = new Date().getTime();
+            // Find the distance between now and the count down date
+            const distance = countDownDate - now;
+            // Time calculations for minutes and seconds
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            cycleStateManager(minutes, seconds);
+            if (ac_unit.running && distance <= 0) {
+                countDownDate.setMinutes(countDownDate.getMinutes() + 7);
+            } else if (!ac_unit.running) {
+                ac_unit.cycleState = "off";
+                clearInterval(cycleTimer)
+            }
+        }, 1000);
+    }
+}
+
 /* Start AC Event */
 function startAC() {
-    relayToAC.run(ac_unit.setting);
     ac_unit.running = true;
+    startACCycleTimer();
 }
 
 /* Stop AC Event */
 function stopAC() {
-    relayToAC.destroy();
     ac_unit.running = false;
-    startCountdown();
+    relayToAC.destroy();
+    startExpirationCountdown();
 }
 
 function cooling() {
@@ -75,8 +131,6 @@ function cooling() {
         }
         // Temp In Range
     }
-    console.log(ac_unit.desiredTemp);
-    console.log(getSensorReadings.getTemperature());
 }
 
 function heating() {
@@ -92,8 +146,6 @@ function heating() {
         }
         // Temp In Range
     }
-    console.log("Desired Temperature: " + ac_unit.desiredTemp);
-    console.log("Current Temperature: " + getSensorReadings.getTemperature());
 }
 
 /* Listens for signals to update the relay */
@@ -104,7 +156,8 @@ setInterval(() => {
     if (ac_unit.setting === "heat") {
         heating();
     }
-    io.sockets.emit("ac_state", ac_unit);   // Emits Current State to UI
+    // Emits Current State to UI
+    io.sockets.emit("ac_state", ac_unit);
 }, 1000);
 
 /*

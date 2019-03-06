@@ -23,13 +23,6 @@ function shiftData(chart, label, data) {
 
 /** Listening for "temp" signal **/
 socket.on("temp", function (data) {
-    localStorage.setItem("temperature", data.temperature);
-    localStorage.setItem("humidity", data.humidity);
-    localStorage.setItem("pressure", data.pressure);
-    localStorage.setItem("lux", data.lux);
-    localStorage.setItem("date", data.date);
-    localStorage.setItem("time", data.time);
-
     /** Update HTML elements with data **/
     document.getElementById("envTemp").innerHTML = data.temperature;
     document.getElementById("envHum").innerHTML = data.humidity;
@@ -51,15 +44,11 @@ socket.on("temp", function (data) {
 
 /** Listening for "ac_state" signal **/
 socket.on("ac_state", function (data) {
-    localStorage.setItem("acSetting", data.setting);
-    localStorage.setItem("acDesiredTemp", data.desiredTemp);
-    localStorage.setItem("acRunning", data.running);
-    localStorage.setItem("acCountdown", data.countdown);
-
     //Receives the emitted state signal from the controller
     document.getElementById("acSetting").innerHTML = data.setting;
     document.getElementById("acDesiredTemp").innerHTML = data.desiredTemp;
     document.getElementById("acRunning").innerHTML = data.running;
+    document.getElementById("acCycleState").innerHTML = data.cycleState;
     document.getElementById("acCountdown").innerHTML = data.countdown;
     switch (data.setting) {
         case "cool":
@@ -76,10 +65,6 @@ socket.on("ac_state", function (data) {
 
 /** When page loads **/
 window.addEventListener("load", function () {
-    document.getElementById("envTemp").innerHTML = localStorage.getItem("temperature");
-    document.getElementById("envHum").innerHTML = localStorage.getItem("humidity");
-    document.getElementById("date").innerHTML = "Date: " + localStorage.getItem("date");
-
     const cool = document.getElementById("radio1");
     const heat = document.getElementById("radio2");
     const off = document.getElementById("radio3");
