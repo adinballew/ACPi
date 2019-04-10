@@ -44,6 +44,8 @@ socket.on("temp", function (data) {
 
 /** Listening for "ac_state" signal **/
 socket.on("ac_state", function (data) {
+    if (data.desiredTemp !== "Off") localStorage.setItem("acDesiredTemp", data.desiredTemp);
+
     //Receives the emitted state signal from the controller
     document.getElementById("acSetting").innerHTML = data.setting;
     document.getElementById("acDesiredTemp").innerHTML = data.desiredTemp;

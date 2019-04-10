@@ -8,7 +8,7 @@ const SensorTag = require("sensortag"); // https://github.com/sandeepmistry/node
 const tags = [];
 const cc2650 = "546c0e533366";
 const pollTime = 1; // Time in seconds to poll
-const tempConfig = 6;
+const tempConfig = 8;
 
 const readings = {
     temperature: 0,
@@ -51,7 +51,6 @@ function handleTag(tag) {
     }
 
     function readHumidity(temperature, humidity) {
-        // console.log(temperature);
         readings.temperature = ((temperature - tempConfig) * 9 / 5 + 32).toFixed(1);
         readings.humidity = humidity.toFixed(1);
     }

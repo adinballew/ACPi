@@ -1,0 +1,7 @@
+{
+  "setting": "off",
+  "desiredTemp": 70,
+  "running": false,
+  "cycleState": "off",
+  "countdown": "EXPIRED"
+}

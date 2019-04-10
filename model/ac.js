@@ -1,15 +1,11 @@
 const relayToAC = require("./relay-to-ac");
 const getSensorReadings = require("../controller/get-sensor-readings");
 const io = require("../io");
+const fs = require("fs");
 
 /* Properties of AC Unit */
-const ac_unit = {
-    setting: "off",             // Cool, Heat, Off
-    desiredTemp: 70,            // Desired Temperature to be met
-    running: false,             // Is the AC currently running?
-    cycleState: "off",
-    countdown: "EXPIRED",       // Last time the AC Unit stopped
-};
+let data = fs.readFileSync("./saveState.json");
+const ac_unit = JSON.parse(data.toString());
 
 /* Desired Temp Below Current Temp */
 function desiredBelow() {
@@ -158,6 +154,12 @@ setInterval(() => {
     }
     // Emits Current State to UI
     io.sockets.emit("ac_state", ac_unit);
+
+    // Writes Current State to file
+    let data = JSON.stringify(ac_unit, null, 2);
+    fs.writeFile("./saveState.json", data, (err) => {
+        if (err) throw err;
+    });
 }, 1000);
 
 /*

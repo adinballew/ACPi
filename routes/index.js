@@ -2,23 +2,20 @@ const express = require("express");
 const router = express.Router();
 const io = require("../io");
 const ac = require("../model/ac");
+const googleCalendar = require("../googleCalendar");
 const queryControl = require("../controller/query-controller");
 
-//TODO: Increase responsiveness
-// queryControl.getRecentData();
+queryControl(true);
 
 /* GET index */
 router.get("/", function (req, res, next) {
+    console.log(googleCalendar.todaysEvents);
     res.render("index", {});
 });
 
-router.get("/scheduler", function (req, res, next) {
-    res.render("scheduler", {});
+router.get("/recent-data", function (req, res, next) {
+    res.render("recent-data", {});
 });
-
-// router.get("/recent-data", function (req, res, next) {
-//     res.render("recent-data", {});
-// });
 
 /* Event Listener for name */
 function relayEventListener(name, socket) {
