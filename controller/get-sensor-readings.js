@@ -1,5 +1,5 @@
 const io = require("../io");
-const sensordata = require("../model/sensordata");
+const db = require("../firebase");
 
 /** TODO: Consider writing firmware of sensor tag to support always on
  * http://www.ti.com/tool/BLE-Stack
@@ -7,7 +7,7 @@ const sensordata = require("../model/sensordata");
 const SensorTag = require("sensortag"); // https://github.com/sandeepmistry/node-sensortag
 const tags = [];
 const cc2650 = "546c0e533366";
-const pollTime = 1; // Time in seconds to poll
+const pollTime = 5; // Time in seconds to poll
 const tempConfig = 8;
 
 const readings = {
@@ -73,17 +73,7 @@ function handleTag(tag) {
 // discovers tag by id
 SensorTag.discoverById(cc2650, handleTag);
 
-function createSensorData(today) {
-    sensordata.create({
-        Date: today,
-        Temperature: readings.temperature,
-        Humidity: readings.humidity,
-        Pressure: readings.pressure,
-        Lux: readings.lux
-    });
-}
-
-/** Polls sensor data every second **/
+/** Polls sensor data every (polltime * seconds) **/
 setInterval(() => {
     let today = new Date();
     // Emits sensor data to controller
@@ -99,7 +89,15 @@ setInterval(() => {
             + (appendLeadingZero(today.getMinutes())) + ":"
             + appendLeadingZero(today.getSeconds())
     });
-    createSensorData(today)
+    db.collection("sensordata").add({
+        Temperature: readings.temperature,
+        Humidity: readings.humidity,
+        Pressure: readings.pressure,
+        Lux: readings.lux,
+        DateTime: today
+    }).catch(err => {
+        console.log(err);
+    });
 }, 1000 * pollTime);
 
 module.exports.getTemperature = () => readings.temperature;

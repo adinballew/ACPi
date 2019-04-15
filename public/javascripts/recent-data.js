@@ -8,8 +8,8 @@ const table = new Tabulator("#recent-table", {
     index: "Date",
     columns: [
         {
-            title: "Date", field: "Date", sorter: "time", formatter: "datetime", formatterParams: {
-                outputFormat: "YYYY/MM/DD",
+            title: "DateTime", field: "DateTime", sorter: "time", formatter: "datetime", formatterParams: {
+                outputFormat: "YYYY/MM/DD hh:mm:ss",
                 invalidPlaceholder: "(invalid date)"
             },
             sorterParams: {
@@ -29,6 +29,5 @@ const table = new Tabulator("#recent-table", {
 });
 //TODO: Add a fixed size to the number of record in the table.
 socket.on("dbData", function (data) {
-    //Receives the emitted state signal from the controller
     table.updateOrAddData(data.recentData)
 });

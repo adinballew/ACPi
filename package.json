@@ -18,6 +18,7 @@
     "express": "~4.16.0",
     "express-hbs": "^2.0.2",
     "express-session": "^1.15.6",
+    "firebase-admin": "^7.2.0",
     "googleapis": "^27.0.0",
     "handlebars-intl": "^1.1.2",
     "http-errors": "~1.6.2",

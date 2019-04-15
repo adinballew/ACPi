@@ -1,16 +1,33 @@
+const db = require("../firebase");
 const io = require("../io");
-const SensorData = require("../model/sensordata");
 
-let queryControllerThread = false;
+const pollTime = 5;
+
+let results = [{
+    DateTime: undefined,
+    Temperature: 0,
+    Humidity: 0,
+    Pressure: 0,
+    Lux: 0
+}];
+
+const sensorDataRef = db.collection("sensordata");
+let query = sensorDataRef.orderBy("DateTime", "desc").limit(1);
 
 setInterval(() => {
-    SensorData.findAll({order: [["Date", "DESC"]], limit: 20})
-        .then(result => {
-            io.sockets.emit("dbData", {recentData: result});
-        })
-        .catch(err => console.log(err));
-}, 1000);
+    query.get()
+        .then(snapshot => {
+            if (!snapshot.empty) {
+                snapshot.forEach(doc => {
+                    results[0].DateTime = doc.data().DateTime.toDate();
+                    results[0].Temperature = doc.data().Temperature;
+                    results[0].Humidity = doc.data().Humidity;
+                    results[0].Pressure = doc.data().Pressure;
+                    results[0].Lux = doc.data().Lux;
+                });
+            } else
+                console.log("No Data")
+        });
+    io.sockets.emit("dbData", {recentData: results});
+}, 1000 * pollTime);
 
-module.exports = function (state) {
-    queryControllerThread = state;
-};

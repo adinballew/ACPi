@@ -3,9 +3,7 @@ const router = express.Router();
 const io = require("../io");
 const ac = require("../model/ac");
 const googleCalendar = require("../googleCalendar");
-const queryControl = require("../controller/query-controller");
-
-queryControl(true);
+const query = require("../controller/query-controller");
 
 /* GET index */
 router.get("/", function (req, res, next) {
