@@ -183,6 +183,8 @@ module.exports = function (name, data) {
             console.log(name + ": on");
             ac_unit.setting = name;
             ac_unit.desiredTemp = data;
+            ac_unit.running = false;
+            ac_unit.cycleState = "off";
             ac_unit.countdown = "EXPIRED";
             relayToAC.destroy();
             break;
