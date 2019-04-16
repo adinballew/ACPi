@@ -14,7 +14,7 @@ let results = [{
 const sensorDataRef = db.collection("sensordata");
 let query = sensorDataRef.orderBy("DateTime", "desc").limit(1);
 
-setInterval(() => {
+function getSensorData() {
     query.get()
         .then(snapshot => {
             if (!snapshot.empty) {
@@ -28,6 +28,10 @@ setInterval(() => {
             } else
                 console.log("No Data")
         });
+}
+
+module.exports.startQueryStream = () => setInterval(() => {
+    getSensorData();
     io.sockets.emit("dbData", {recentData: results});
 }, 1000 * pollTime);
 

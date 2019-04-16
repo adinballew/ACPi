@@ -9,6 +9,8 @@ const intl = require("handlebars-intl");  // https://formatjs.io/handlebars/
 const session = require("express-session");  // https://github.com/expressjs/session
 
 const index = require("./routes/index");
+const query = require("./controller/query-controller");
+const connectionListener = require("./listener/connectionListener");
 
 const app = express();
 
@@ -43,6 +45,8 @@ app.use(function (req, res, next)
 });
 
 app.use("/", index);
+connectionListener.openConnection();
+query.startQueryStream();
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
