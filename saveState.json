@@ -1,5 +1,6 @@
 {
   "setting": "off",
+  "auto": "off",
   "desiredTemp": 70,
   "running": false,
   "cycleState": "off",

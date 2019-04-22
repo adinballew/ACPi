@@ -3,7 +3,7 @@ const readline = require("readline");
 const {google} = require("googleapis");
 
 // If modifying these scopes, delete token.json.
-const SCOPES = ["https://www.googleapis.com/auth/calendar.readonly"];
+const SCOPES = ["https://www.googleapis.com/auth/calendar.events"];
 // The file token.json stores the user's access and refresh tokens, and is
 // created automatically when the authorization flow completes for the first
 // time.
@@ -68,8 +68,18 @@ function getAccessToken(oAuth2Client, callback) {
     });
 }
 
+function refreshEvents() {
+    // Load client secrets from a local file.
+    console.log("Getting Current Events...");
+    fs.readFile("credentials.json", (err, content) => {
+        if (err) return console.log("Error loading client secret file:", err);
+        // Authorize a client with credentials, then call the Google Calendar API.
+        authorize(JSON.parse(content.toString()), listDaysEvents);
+    });
+}
+
 /**
- * Lists the next 10 events on the user's primary calendar.
+ * Lists the current days events on the calendarId's calendar.
  * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
  */
 function listDaysEvents(auth) {
@@ -90,10 +100,12 @@ function listDaysEvents(auth) {
         if (err) return console.log("The API returned an error: " + err);
         const events = res.data.items;
         if (events.length) {
-            events.map((event, i) => {
+            events.forEach(event => {
                 const start = event.start.dateTime || event.start.date;
+                const end = event.end.dateTime || event.end.date;
                 todaysEvents[event.summary] = {
                     start: start,
+                    end: end,
                     description: event.description
                 }
             });
@@ -103,4 +115,5 @@ function listDaysEvents(auth) {
     });
 }
 
+module.exports.refreshEvents = () => refreshEvents();
 module.exports.todaysEvents = todaysEvents;

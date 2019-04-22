@@ -38,8 +38,7 @@ app.use(session({
 app.use(express.static(path.join(__dirname, "public")));
 
 // res.locals is an object passed to hbs engine
-app.use(function (req, res, next)
-{
+app.use(function (req, res, next) {
     res.locals.session = req.session;
     next();
 });

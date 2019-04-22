@@ -1,5 +1,6 @@
 const relayToAC = require("./relay-to-ac");
 const getSensorReadings = require("../controller/get-sensor-readings");
+const autoTemp = require("../controller/auto-temp-controller");
 const io = require("../io");
 const fs = require("fs");
 
@@ -39,7 +40,7 @@ function restingState() {
  * rest cycle:              1min 30sec          relayToAC.destroy();
  */
 function cycleStateManager(minutes, seconds) {
-    console.log("Minutes: " + minutes + " Seconds: " + seconds);
+    // console.log("Minutes: " + minutes + " Seconds: " + seconds);
     if ((minutes <= 7 && minutes >= 6) && ac_unit.cycleState !== "fan") {
         fanState();
     } else if ((minutes < 6 && minutes >= 2) && ac_unit.cycleState !== "running") {
@@ -146,12 +147,10 @@ function heating() {
 
 /* Listens for signals to update the relay */
 setInterval(() => {
-    if (ac_unit.setting === "cool") {
+    if (ac_unit.setting === "cool")
         cooling();
-    }
-    if (ac_unit.setting === "heat") {
+    if (ac_unit.setting === "heat")
         heating();
-    }
     // Emits Current State to UI
     io.sockets.emit("ac_state", ac_unit);
 
@@ -190,6 +189,8 @@ module.exports = function (name, data) {
             break;
         case "auto":
             console.log(name + ": " + data);
+            autoTemp.getTodaysEvents(data);
+            ac_unit.auto = data;
             break;
     }
 };
