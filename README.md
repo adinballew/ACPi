@@ -6,7 +6,7 @@ Home
 ![screenshot1](./screenshot1.gif)
 
 Recent Data
-![screenshot2](./screenshot2.PNG)
+![screenshot2](./screenshot2.gif)
 
 ## Installation
 Clone package or download zip file.
