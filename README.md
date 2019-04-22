@@ -2,6 +2,11 @@
 Web Interface for Monitoring Temperature and Humidity using TI SensorTag CC2650 and Controlling PTAC AC Unit Over Raspberry Pi.
 Uses 4 Channel Relay Controlled using GPIO Pins.
 
+####Home
+![screenshot1](./screenshot1.PNG)
+####Recent Data
+![screenshot2](./screenshot2.PNG)
+
 ## Installation
 Clone package or download zip file.
 ```npm
