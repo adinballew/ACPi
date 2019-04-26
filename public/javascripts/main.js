@@ -48,10 +48,11 @@ socket.on("ac_state", function (data) {
 
     //Receives the emitted state signal from the controller
     document.getElementById("acSetting").innerHTML = data.setting;
-    document.getElementById("acDesiredTemp").innerHTML = data.desiredTemp;
     document.getElementById("acRunning").innerHTML = data.running;
+    document.getElementById("acDesiredTemp").innerHTML = data.desiredTemp;
     document.getElementById("acCycleState").innerHTML = data.cycleState;
     document.getElementById("acCountdown").innerHTML = data.countdown;
+    document.getElementById("acAuto").innerHTML = data.auto;
     switch (data.setting) {
         case "cool":
             document.getElementById("radio1").checked = true;
@@ -62,6 +63,13 @@ socket.on("ac_state", function (data) {
         default:
             document.getElementById("radio3").checked = true;
             break;
+    }
+    if (data.auto !== "off") {
+        document.getElementById("toggleAuto").checked = true;
+        document.getElementById("desired-temp").innerHTML = "Auto";
+    }
+    else {
+        document.getElementById("desired-temp").innerHTML = data.desiredTemp;
     }
 });
 

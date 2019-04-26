@@ -1,20 +1,20 @@
-const io = require("../io");
-const db = require("../firebase");
-
 /** TODO: Consider writing firmware of sensor tag to support always on
  * http://www.ti.com/tool/BLE-Stack
  * ttp://e2e.ti.com/support/wireless-connectivity/bluetooth/f/538/t/423701?Sensor-Tag-2-Prevent-Sleep-Always-On-Firmware **/
 const SensorTag = require("sensortag"); // https://github.com/sandeepmistry/node-sensortag
 const tags = [];
 const cc2650 = "546c0e533366";
-const pollTime = 5; // Time in seconds to poll
+const pollTime = 5;
 const tempConfig = 8;
 
 const readings = {
     temperature: 0,
     humidity: 0,
     pressure: 0,
-    lux: 0
+    lux: 0,
+    date: "",
+    time: "",
+    datetime: new Date()
 };
 
 function appendLeadingZero(date) {
@@ -23,6 +23,18 @@ function appendLeadingZero(date) {
 
 function to12HourClock(hour) {
     return (hour >= 13) ? hour - 12 : hour;
+}
+
+function formatDate(today) {
+    return today.getFullYear() + "-"
+        + appendLeadingZero(today.getUTCMonth() + 1) + "-"
+        + appendLeadingZero(today.getDate());
+}
+
+function formatTime(today) {
+    return (appendLeadingZero(to12HourClock(today.getHours()))) + ":"
+        + (appendLeadingZero(today.getMinutes())) + ":"
+        + appendLeadingZero(today.getSeconds())
 }
 
 function handleTag(tag) {
@@ -51,8 +63,12 @@ function handleTag(tag) {
     }
 
     function readHumidity(temperature, humidity) {
+        let today = new Date();
         readings.temperature = ((temperature - tempConfig) * 9 / 5 + 32).toFixed(1);
         readings.humidity = humidity.toFixed(1);
+        readings.date = formatDate(today);
+        readings.time = formatTime(today);
+        readings.datetime = today;
     }
 
     function readBarometricPressure(pressure) {
@@ -70,36 +86,8 @@ function handleTag(tag) {
     tag.on("disconnect", disconnect); // set a listener for the tag disconnects
 }
 
-// discovers tag by id
-SensorTag.discoverById(cc2650, handleTag);
-
-/** Polls sensor data every (polltime * seconds) **/
-setInterval(() => {
-    let today = new Date();
-    // Emits sensor data to controller
-    io.sockets.emit("temp", {
-        temperature: readings.temperature,
-        humidity: readings.humidity,
-        pressure: readings.pressure,
-        lux: readings.lux,
-        date: today.getFullYear() + "-"
-            + appendLeadingZero(today.getUTCMonth() + 1) + "-"
-            + appendLeadingZero(today.getDate()),
-        time: (appendLeadingZero(to12HourClock(today.getHours()))) + ":"
-            + (appendLeadingZero(today.getMinutes())) + ":"
-            + appendLeadingZero(today.getSeconds())
-    });
-    db.collection("sensordata").add({
-        Temperature: readings.temperature,
-        Humidity: readings.humidity,
-        Pressure: readings.pressure,
-        Lux: readings.lux,
-        DateTime: today
-    }).catch(err => {
-        console.log(err);
-    });
-}, 1000 * pollTime);
-
+module.exports.initSensor = () => SensorTag.discoverById(cc2650, handleTag);
+module.exports.getReadings = () => readings;
 module.exports.getTemperature = () => readings.temperature;
 module.exports.getHumidity = () => readings.humidity;
 module.exports.getPressure = () => readings.pressure;

@@ -10,6 +10,7 @@ const session = require("express-session");  // https://github.com/expressjs/ses
 
 const index = require("./routes/index");
 const query = require("./controller/query-controller");
+const acController = require("./controller/ac-controller");
 const connectionListener = require("./listener/connectionListener");
 
 const app = express();
@@ -44,6 +45,7 @@ app.use(function (req, res, next) {
 });
 
 app.use("/", index);
+acController.startStateManager();
 connectionListener.openConnection();
 query.startQueryStream();
 

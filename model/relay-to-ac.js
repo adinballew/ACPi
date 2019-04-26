@@ -1,5 +1,11 @@
 const rpio = require("rpio"); // https://github.com/jperkin/node-rpio
 
+/*
+Fan = R-G
+Cool = Fan, R-Y
+Heat = Fan, R-W
+ */
+
 /* Assign Pins to Relays */
 const pins = {
     heat: 11,

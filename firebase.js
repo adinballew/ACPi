@@ -7,4 +7,19 @@ admin.initializeApp({
 });
 const db = admin.firestore();
 
+function addSensorData(readings) {
+    db.collection("sensordata").add({
+        Temperature: readings.temperature,
+        Humidity: readings.humidity,
+        Pressure: readings.pressure,
+        Lux: readings.lux,
+        DateTime: readings.datetime
+    })
+        .catch(err => {
+            console.log(err);
+        });
+}
+
+
 module.exports = db;
+module.exports.addSensorData = (readings) => addSensorData(readings);
